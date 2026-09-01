@@ -1,6 +1,9 @@
 <style>
   * { box-sizing: border-box; }
   .pdf-page-header { height: 15mm; width: 100%; position: relative; overflow: hidden; color: #173B6C; font-family: "Noto Serif CJK SC", "SimSun", "Songti SC", serif; border-bottom: 1.2pt solid #5B82BE; }
+  /* header.jpg 是显微镜+DNA 装饰图（1224x238, ratio 5.14），原本就设计为水平
+     拉伸的页眉条；保留 cover + 居中底对齐，在高度方向裁剪，因内容是均匀
+     纹理，裁剪不会丢失主体。 */
   .pdf-header-background { position: absolute; inset: 0; z-index: 0; width: 100%; height: 15mm; object-fit: cover; object-position: center bottom; }
   .pdf-page-header-inner { position: absolute; inset: 0 12mm; z-index: 1; }
   .pdf-header-logo { position: absolute; left: 0; bottom: 2.2mm; width: 19mm; height: auto; max-height: 10.5mm; object-fit: contain; }

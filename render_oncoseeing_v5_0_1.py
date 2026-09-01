@@ -1375,9 +1375,9 @@ def render_html(project_dir: Path, data: Dict[str, Any], output_html: Path) -> s
     env.globals["format_reference"] = format_reference
     css = (project_dir / "static/css/report.css").read_text(encoding="utf-8")
     assets = {
-        "cover": file_data_uri(project_dir / "static/assets/cover_background_right_bottom_v5_0.png", "image/png"),
+        "cover": file_data_uri(project_dir / "static/assets/coverpage.png", "image/png"),
         "logo": file_data_uri(project_dir / "static/assets/ibiri_full_logo_theme_v5_0.png", "image/png"),
-        "header_bg": file_data_uri(project_dir / "static/assets/header_background_band_v5_0.png", "image/png"),
+        "header_bg": file_data_uri(project_dir / "static/assets/header.jpg", "image/jpeg"),
     }
     rendered = env.get_template("report.html").render(data=data, assets=assets, css=css)
     header_template = env.get_template("pdf_header.html").render(data=data, assets=assets)

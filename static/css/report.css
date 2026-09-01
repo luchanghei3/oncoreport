@@ -44,107 +44,36 @@ html, body {
   letter-spacing: 0;
 }
 
+/* 封面：coverpage.png 为完整设计稿，整页满铺，不叠加 HTML 文本。
+   尺寸跟随分页容器 .pdf-page（内容区 186mm x 252mm）；图片 1068x1473
+   比例 0.725 与内容区 0.738 几乎一致，cover 仅裁掉约 1.8%，视觉无损。 */
 .cover-page {
-  min-height: 250mm;
-  padding: 16mm 3mm 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 252mm;
+  padding: 0;
   overflow: hidden;
 }
 
-.cover-background {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 210mm;
-  height: auto;
-  z-index: 0;
-}
-
-.cover-header,
-.cover-main {
-  position: relative;
-  z-index: 1;
-}
-
-.cover-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  min-height: 18mm;
-}
-
-.cover-logo {
-  width: 34mm;
-  height: auto;
+.cover-full {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
-.lab-name {
-  text-align: right;
-  color: var(--navy);
-  line-height: 1.05;
+/* 分页容器内的封面撑满整页 */
+.pdf-page > .cover-page {
+  height: var(--page-content-height);
+  min-height: 0;
 }
 
-.lab-cn {
-  font-size: 13.2pt;
-}
-
-.lab-en {
-  margin-top: 3mm;
-  font-size: 9.5pt;
-  color: var(--blue);
-}
-
-.cover-main {
-  margin-top: 34mm;
-  margin-left: 5mm;
-  width: 175mm;
-}
-
-.brand-line {
-  color: var(--navy);
-  line-height: 0.85;
-  white-space: nowrap;
-}
-
-.brand-name {
-  font-size: 50pt;
-}
-
-.brand-tm {
-  font-size: 22pt;
-  vertical-align: top;
-  margin-left: 1.8mm;
-  position: relative;
-  top: -5mm;
-}
-
-.cover-title {
-  margin-top: 14mm;
-  font-size: 41pt;
-  line-height: 1.18;
-  color: var(--navy);
-  letter-spacing: 0.5pt;
-}
-
-.cover-subtitle {
-  margin-top: 12mm;
-  font-size: 17pt;
-  color: var(--blue);
-  line-height: 1.25;
-}
-
-.cover-en-title {
-  margin-top: 3mm;
-  font-size: 12.5pt;
-  color: var(--muted);
-  line-height: 1.2;
-}
-
-.cover-rule {
-  margin-top: 3.5mm;
-  width: 174mm;
-  height: 0;
-  border-top: 1.5pt solid var(--blue);
+/* 预览态（未分页）封面也按 A4 内容区呈现 */
+body > .cover-page {
+  width: var(--page-content-width);
+  height: var(--page-content-height);
 }
 
 .page-footer {
@@ -908,14 +837,9 @@ html, body {
 }
 
 /* Flow-based report layout. Playwright supplies the repeated page header;
-   sections and cards flow continuously through Chromium's normal pagination. */
-.cover-page {
-  width: auto;
-  height: auto;
-  position: relative;
-  padding: 16mm 3mm 0;
-  overflow: hidden;
-}
+   sections and cards flow continuously through Chromium's normal pagination.
+   注意：.cover-page 的样式统一定义在文件前部（封面区），此处不再重复定义，
+   否则其 padding 会覆盖前部的设置导致封面图无法满铺。 */
 
 .report-section {
   width: auto;

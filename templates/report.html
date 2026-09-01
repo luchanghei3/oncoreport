@@ -18,10 +18,10 @@
 {# 正文中引用文献：传 key，编号由渲染顺序自动生成，切勿手写 [1] #}
 {%- macro citation(ref_keys) -%}{{ ('<span class="citation">' ~ cite(ref_keys) ~ '</span>') | safe }}{%- endmacro -%}
 
+{# 封面：coverpage.png 是完整设计稿（已含 logo、院所、产品名、中英文标题、
+   底部建筑图与英文口号），整页满铺，不再叠加任何 HTML 文本，避免与图中文字重复。 #}
 <section class="cover-page">
-  <img class="cover-background" src="{{ assets.cover }}" alt="" />
-  <header class="cover-header"><img class="cover-logo" src="{{ assets.logo }}" alt="IBIRI logo" /><div class="lab-name"><div class="lab-cn">{{ data.report_meta.lab_name | mixed }}</div><div class="lab-en latin">{{ data.report_meta.lab_name_en }}</div></div></header>
-  <main class="cover-main"><div class="brand-line"><span class="brand-name latin">{{ data.report_meta.brand_name }}</span><span class="brand-tm latin">TM</span></div><div class="cover-title"><div>{{ data.test.cover_title_line1 | mixed }}</div><div>{{ data.test.cover_title_line2 | mixed }}</div></div><div class="cover-subtitle">{{ data.test.report_subtitle | mixed }}</div><div class="cover-en-title latin">{{ data.test.english_title }}</div><div class="cover-rule"></div></main>
+  <img class="cover-full" src="{{ assets.cover }}" alt="" />
 </section>
 
 <section class="report-section">
