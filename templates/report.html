@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ data.report_meta.brand_name }} Report</title>
+  <style>{{ css | safe }}</style>
+</head>
+<body>
+
+{% macro section_header(no, title, subtitle) -%}
+<div class="section-title">
+  <div class="section-no latin">{{ no }}</div>
+  <div class="section-copy"><h1>{{ title | mixed }}</h1><div class="section-subtitle latin">{{ subtitle }}</div></div>
+</div>
+{%- endmacro %}
+
+{# 正文中引用文献：传 key，编号由渲染顺序自动生成，切勿手写 [1] #}
+{%- macro citation(ref_keys) -%}{{ ('<span class="citation">' ~ cite(ref_keys) ~ '</span>') | safe }}{%- endmacro -%}
+
+<section class="cover-page">
+  <img class="cover-background" src="{{ assets.cover }}" alt="" />
+  <header class="cover-header"><img class="cover-logo" src="{{ assets.logo }}" alt="IBIRI logo" /><div class="lab-name"><div class="lab-cn">{{ data.report_meta.lab_name | mixed }}</div><div class="lab-en latin">{{ data.report_meta.lab_name_en }}</div></div></header>
+  <main class="cover-main"><div class="brand-line"><span class="brand-name latin">{{ data.report_meta.brand_name }}</span><span class="brand-tm latin">TM</span></div><div class="cover-title"><div>{{ data.test.cover_title_line1 | mixed }}</div><div>{{ data.test.cover_title_line2 | mixed }}</div></div><div class="cover-subtitle">{{ data.test.report_subtitle | mixed }}</div><div class="cover-en-title latin">{{ data.test.english_title }}</div><div class="cover-rule"></div></main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">
+    {{ section_header('01', '基本信息', 'Patient, sample and test information') }}
+    <div class="report-block">
+      <h2 class="subsection-title">1.1 受检者与样本信息</h2>
+      <div class="grid-2"><div class="card info-table">{% for label, value in data.sample_info_rows %}<div class="info-row"><div class="info-label">{{ label | mixed }}</div><div class="info-value">{{ value | mixed }}</div></div>{% endfor %}</div><div class="card report-info"><div class="card-title">报告信息</div><div class="report-info-body">{% for label, value in data.report_info_rows %}<div class="report-info-row"><div class="report-info-label">{{ label | mixed }}</div><div class="report-info-value">{{ value | mixed }}</div></div>{% endfor %}</div></div></div>
+    </div>
+    <div class="report-block">
+      <h2 class="subsection-title">1.2 检测说明</h2>
+      <div class="card text-card"><p>本检测基于 {{ data.report_meta.method_name | mixed }}，对循环游离 DNA 中检出的变异位点进行综合分析，用于多癌种早期筛查风险评估和后续临床检查的辅助参考。</p></div>
+      <div class="card variant-table-card coverage-card"><div class="card-title">癌种检测覆盖统计</div><table class="priority-table compact-table"><thead><tr><th>癌种</th><th>检测基因数</th><th>检测位点数</th></tr></thead><tbody>{% for row in data.cancer_coverage_rows %}<tr><td>{{ row.cancer_name | mixed }}</td><td class="latin">{{ row.gene_count }}</td><td class="latin">{{ row.site_count }}</td></tr>{% endfor %}</tbody></table></div>
+    </div>
+  </main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">
+    {{ section_header('02', '检测结果综合评估', 'Integrated result and risk assessment') }}
+    <div class="report-block"><h2 class="subsection-title">2.1 综合结论摘要</h2><div class="card text-card"><p>{{ data.result.conclusion | mixed }}</p><p class="summary-note">本次共测得 {{ data.summary.variant_count }} 个位点；{% if data.cancer_findings %}匹配到 {{ data.cancer_findings | length }} 个癌种：{% for finding in data.cancer_findings %}{{ finding.cancer_name | mixed }}{% if not loop.last %}、{% endif %}{% endfor %}。{% else %}当前未从 HGVS 查询结果中匹配到可解读癌种。{% endif %}</p></div><div class="risk-cards-grid risk-cards-wide">{% for card in data.risk_cards %}<div class="metric-card {{ card.class }}"><div class="metric-title">{{ card.title | mixed }}</div><div class="metric-body"><div class="metric-value">{{ card.value | mixed }}</div><div class="metric-sub">{{ card.sub | mixed }}</div></div></div>{% endfor %}</div></div>
+    <div class="report-block"><h2 class="subsection-title">2.2 风险评估总览</h2><div class="card variant-table-card risk-table-card"><table class="priority-table compact-table"><thead><tr><th>患癌症风险组织</th><th>检测评估结果</th><th>风险等级</th></tr></thead><tbody>{% for row in data.risk_overview_rows %}<tr><td>{{ row.cancer_name | mixed }}</td><td>{{ row.assessment | safe }}</td><td class="risk-{{ row.risk_level[:1] }}">{{ row.risk_level | mixed }}</td></tr>{% endfor %}</tbody></table></div></div>
+    <div class="report-block"><div class="card variant-table-card"><div class="card-title">测得位点明细</div><table class="variant-table"><thead><tr><th>突变位点（CDS）</th><th>检出恶性突变条数</th><th>单分子总条数</th><th>突变频率</th></tr></thead><tbody>{% for row in data.variant_table_rows %}<tr><td>{{ row.cds_display | mixed }}</td><td class="latin">{{ row.ac }}</td><td class="latin">{{ row.ad }}</td><td class="latin">{{ row.af }}</td></tr>{% else %}<tr><td colspan="4">暂无可用位点数据</td></tr>{% endfor %}</tbody></table></div></div>
+  </main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">
+    {{ section_header('03', '阳性发现深度解读', 'Cancer-specific interpretation of matched findings') }}
+    {% for finding in data.cancer_findings %}
+    <article class="report-block cancer-finding">
+      <h2 class="subsection-title">3.{{ loop.index | int + 1 }} {{ finding.cancer_name | mixed }}筛查结果</h2>
+      <div class="card prob-card">
+        <h3 class="finding-title">1. 阳性发现特异性突变点详情</h3>
+        <p class="small-note">在本次检测的 特异性突变 位点中，查询到 {{ finding.cancer_name | mixed }} 相关的 {{ finding.site_count }} 个阳性位点。</p>
+        <table class="variant-table"><thead><tr><th>突变位点（CDS）</th><th>检出恶性突变条数</th><th>单分子总条数</th><th>突变频率</th></tr></thead><tbody>{% for row in finding.variants %}<tr><td>{{ row.cds_display | mixed }}</td><td class="latin">{{ row.ac }}</td><td class="latin">{{ row.ad }}</td><td class="latin">{{ row.af }}</td></tr>{% endfor %}</tbody></table>
+        <h3 class="finding-title">1.1 突变点功能与证据详情</h3>
+        <table class="variant-table detail-table"><thead><tr><th>基因</th><th>突变位点</th><th>突变频率</th><th>功能影响</th><th>证据等级</th></tr></thead><tbody>{% for row in finding.variants %}<tr><td class="latin">{{ row.gene | mixed if row.gene else '-' }}</td><td class="latin variant-site-cell"><span class="variant-site-cds">{{ row.cds_display | mixed }}</span><span class="variant-site-protein">{{ row.protein | mixed }}</span></td><td class="latin">{{ row.af | mixed }}</td><td>{{ row.function | mixed }}</td><td class="latin">{{ row.tier | mixed }}</td></tr>{% endfor %}</tbody></table>
+        <div class="variant-interpretations">{% for row in finding.variants %}<p class="finding-copy">{{ row.cds_display | mixed }}突变比例为{{ row.af | mixed }}，说明相当于体内含有{{ af_cell_range(row.af) }}个携带该突变的变异细胞。</p>{% endfor %}</div>
+        <h3 class="finding-title">2. 意义</h3><p class="finding-copy">本次检出 {{ finding.customer_site_count }} 个相关位点；数据库样本突变位点数中位数为 {{ finding.median_site_count }}。按本报告规则，受检者位点数{% if finding.risk_level == '低风险' %}低于{% elif finding.risk_level == '中风险' %}等于{% else %}高于{% endif %}中位数，判定为<span class="risk-{{ finding.risk_level[:1] }}">{{ finding.risk_level | mixed }}</span>。</p><table class="priority-table compact-table meaning-table"><thead><tr><th>癌症（基因）</th><th>数据库中总案例数</th><th>含有该基因突变案例数</th><th>发生比例</th></tr></thead><tbody>{% for row in finding.gene_statistics %}<tr><td>{{ finding.cancer_name | mixed }}（{{ row.gene | mixed }}）</td><td class="latin">{{ row.total_cases }}</td><td class="latin">{{ row.gene_case_count }}</td><td class="latin">{{ row.ratio | pct }}</td></tr>{% else %}<tr><td colspan="4">未提供可用的基因符号数据</td></tr>{% endfor %}</tbody></table><div class="chart-wrap">{{ cancer_bar_svg(finding.distribution, finding.median_site_count, finding.customer_site_count) }}</div>
+        <div class="cosmic-interpretations">{% for row in finding.variants %}<p class="finding-copy">在COSMIC肿瘤突变数据库中，含有{{ finding.cancer_name | mixed }}病人样本{{ finding.database_case_count }}份，其中{{ row.gene_case_count }}份样本中检测到{{ row.gene | mixed }}基因突变。其中{{ row.hgvsg_sample_count }}份样本中检测到{{ row.cds_display | mixed }}突变。在近十万人正常样本库中该突变不存在，这说明该突变是诱发细胞癌变的一种恶性突变。</p>{% endfor %}</div>
+        <h3 class="finding-title">3. 健康管理和干预建议</h3><p class="finding-copy">建议携带本报告至相关专科就诊，由临床医师制定针对 {{ finding.cancer_name | mixed }} 的个体化复核方案；如有异常症状或高危因素，应优先安排进一步检查并按医嘱随访。</p>
+        {% set advice = cancer_prevention_advice(finding.cancer_name) %}{% if advice %}<div class="prevention-advice"><h4 class="prevention-title">个体化预防</h4><div class="prevention-body">{{ advice | mixed }}</div></div>{% endif %}
+      </div>
+    </article>
+    {% else %}<div class="report-block"><div class="card text-card"><p>本次检测未在已配置的 HGVS–癌种数据库中匹配到可逐项解读的癌种。建议结合综合风险结果和临床情况进行随访。</p></div></div>{% endfor %}
+    <div class="report-block"><h2 class="subsection-title">3.{{ data.cancer_findings | length + 2 }} 小结</h2><div class="card text-card"><p>{{ data.result.conclusion | mixed }}</p></div><div class="card variant-table-card"><div class="card-title">突变比例与对应变异细胞数参考{{ citation('fiala2018') }}</div><table class="variant-table"><thead><tr><th>突变比例</th><th>相当于体内含有携带该突变的变异细胞(个)</th></tr></thead><tbody><tr><td class="latin">1%</td><td class="latin">~10<sup>9</sup></td></tr><tr><td class="latin">0.1%</td><td class="latin">~10<sup>8</sup></td></tr><tr><td class="latin">0.01%</td><td class="latin">~10<sup>7</sup></td></tr></tbody></table></div></div>
+  </main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">{{ section_header('04', '医学建议', 'Medical advice and follow-up') }}<div class="advice-stack">{% for item in data.recommendation['items'] %}<div class="card advice-item"><div class="advice-no latin">{{ loop.index }}</div><div><div class="advice-title">{{ item.title | mixed }}</div><div class="advice-detail">{{ item.detail | mixed }}</div></div></div>{% endfor %}</div></main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">{{ section_header('05', '免责声明', 'Disclaimer and interpretation notes') }}<div class="card disclaimer-card">{% for item in data.disclaimer_items %}<div class="bullet-item"><div class="bullet-no latin">{{ '%02d' % loop.index }}</div><div>{{ item | mixed }}</div></div>{% endfor %}</div></main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">{{ section_header('06', '报告补充说明', 'Report supplementary notes') }}
+    {# 用下标访问：section["items"] 避免命中 Python dict 内置的 .items 方法 #}
+    {# rich 过滤器 = mixed + 段中引用占位符 [[cite:key]] 的替换 #}
+    <div class="card supplement-card">{% for section in supplement_sections %}<div class="supplement-block"><div class="supplement-title">{{ section['title'] | rich }}</div>{% if section.get('paragraphs') %}<div class="supplement-body">{% for p in section['paragraphs'] %}<p>{{ p['text'] | rich }}</p>{% endfor %}</div>{% endif %}{% if section.get('table') %}<table class="supplement-table"><thead><tr>{% for h in section['table']['headers'] %}<th>{{ h | mixed }}</th>{% endfor %}</tr></thead><tbody>{% for row in section['table']['rows'] %}<tr>{% for cell in row %}<td>{{ cell | mixed }}</td>{% endfor %}</tr>{% endfor %}</tbody></table>{% endif %}{% if section.get('items') %}<div class="supplement-body">{% for item in section['items'] %}<div class="supplement-item"><div class="supplement-item-no latin">{{ loop.index }}</div><div class="supplement-item-copy"><span class="supplement-item-title">{{ item['title'] | mixed }}</span> {{ item['text'] | rich }}</div></div>{% endfor %}</div>{% endif %}</div>{% endfor %}</div>
+  </main>
+</section>
+
+<section class="report-section">
+  <main class="section-content">{{ section_header('07', '参考文献', 'References') }}
+    <div class="card references-card">{% for ref in references_used() %}<div class="reference">{{ format_reference(ref) | mixed }}</div>{% else %}<div class="reference reference-empty">本报告正文未引用参考文献。</div>{% endfor %}</div>
+  </main>
+</section>
+</body>
+</html>

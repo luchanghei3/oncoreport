@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 报告产物（由 render_oncoseeing_v5_0_1.py 生成，体积大且可重新生成）
+output/
+*.paginated.html
+
+# 历史备份压缩包（合计约 586MB，内容仅为源码快照，且超过 GitHub 单文件 100MB 限制）
+*.zip
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+.DS_Store
+*.swp

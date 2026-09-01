@@ -1,0 +1,1206 @@
+@page {
+  size: A4;
+  margin: 30mm 12mm 15mm;
+}
+
+:root {
+  --navy: #173B6C;
+  --blue: #5B82BE;
+  --mid-blue: #5F82BC;
+  --light-blue: #D7E3F2;
+  --pale-blue: #F7FAFF;
+  --border: #B2C4DE;
+  --grid: #E9EEF5;
+  --text: #2E3846;
+  --muted: #7C8597;
+  --green: #70B45B;
+  --yellow: #E5BF55;
+  --red: #E1593A;
+  --shadow: none;
+  /* PDF 物理页内容区尺寸，必须与下方 @page 的 size/margin 严格保持一致：
+     A4 高 297mm - 上 30mm - 下 15mm = 252mm
+     A4 宽 210mm - 左 12mm - 右 12mm = 186mm
+     paginate.js 读取这两个变量做测量与拆分。 */
+  --page-content-width: 186mm;
+  --page-content-height: 252mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: var(--text);
+  font-family: "Noto Serif CJK SC", "SimSun", "Songti SC", serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.latin {
+  font-family: "Times New Roman", "Tinos", Times, serif;
+  letter-spacing: 0;
+}
+
+.cover-page {
+  min-height: 250mm;
+  padding: 16mm 3mm 0;
+  overflow: hidden;
+}
+
+.cover-background {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 210mm;
+  height: auto;
+  z-index: 0;
+}
+
+.cover-header,
+.cover-main {
+  position: relative;
+  z-index: 1;
+}
+
+.cover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 18mm;
+}
+
+.cover-logo {
+  width: 34mm;
+  height: auto;
+  display: block;
+}
+
+.lab-name {
+  text-align: right;
+  color: var(--navy);
+  line-height: 1.05;
+}
+
+.lab-cn {
+  font-size: 13.2pt;
+}
+
+.lab-en {
+  margin-top: 3mm;
+  font-size: 9.5pt;
+  color: var(--blue);
+}
+
+.cover-main {
+  margin-top: 34mm;
+  margin-left: 5mm;
+  width: 175mm;
+}
+
+.brand-line {
+  color: var(--navy);
+  line-height: 0.85;
+  white-space: nowrap;
+}
+
+.brand-name {
+  font-size: 50pt;
+}
+
+.brand-tm {
+  font-size: 22pt;
+  vertical-align: top;
+  margin-left: 1.8mm;
+  position: relative;
+  top: -5mm;
+}
+
+.cover-title {
+  margin-top: 14mm;
+  font-size: 41pt;
+  line-height: 1.18;
+  color: var(--navy);
+  letter-spacing: 0.5pt;
+}
+
+.cover-subtitle {
+  margin-top: 12mm;
+  font-size: 17pt;
+  color: var(--blue);
+  line-height: 1.25;
+}
+
+.cover-en-title {
+  margin-top: 3mm;
+  font-size: 12.5pt;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.cover-rule {
+  margin-top: 3.5mm;
+  width: 174mm;
+  height: 0;
+  border-top: 1.5pt solid var(--blue);
+}
+
+.page-footer {
+  position: absolute;
+  left: 12mm;
+  right: 12mm;
+  bottom: 5.5mm;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  column-gap: 8mm;
+  align-items: center;
+  color: var(--muted);
+  font-size: 8.2pt;
+}
+
+.page-footer .footer-page {
+  color: var(--text);
+  font-size: 9.1pt;
+}
+
+.page-content {
+  padding-top: 12mm;
+}
+
+.section-title {
+  display: flex;
+  align-items: stretch;
+  gap: 4mm;
+  margin-bottom: 10mm;
+}
+
+.section-no {
+  width: 25mm;
+  min-width: 25mm;
+  height: 17mm;
+  border-radius: 9mm;
+  background: var(--mid-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18pt;
+  line-height: 1;
+}
+
+.section-copy {
+  height: 17mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.section-copy h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 26pt;
+  line-height: 1.05;
+  font-weight: 600;
+}
+
+.section-copy .section-subtitle {
+  color: var(--muted);
+  font-size: 10.8pt;
+  line-height: 1.1;
+}
+
+.subsection-title {
+  color: var(--blue);
+  font-size: 18pt;
+  line-height: 1.15;
+  margin: 0 0 5mm 0;
+  font-weight: 600;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 7mm;
+  align-items: start;
+}
+
+.two-cols-even {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7mm;
+  align-items: start;
+}
+
+.gap-section {
+  margin-top: 9mm;
+}
+
+.card {
+  background: #fff;
+  border: 0.8pt solid var(--border);
+  border-radius: 6mm;
+  box-shadow: none;
+  /* overflow: hidden; */
+}
+
+.card-pad {
+  padding: 5mm;
+}
+
+.info-table {
+  padding: 4mm;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 32mm minmax(0, 1fr);
+  min-height: 9.3mm;
+  border: 0.7pt solid var(--border);
+  border-radius: 3.5mm;
+  overflow: hidden;
+  margin-bottom: 2.4mm;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label,
+.info-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.info-label {
+  background: var(--light-blue);
+  color: var(--navy);
+  font-size: 10.3pt;
+}
+
+.info-value {
+  padding: 0 3mm;
+  text-align: center;
+  font-size: 10pt;
+  overflow-wrap: anywhere;
+}
+
+.report-info .card-title,
+.risk-legend .card-title {
+  background: var(--mid-blue);
+  color: #fff;
+  border-radius: 6mm 6mm 0 0;
+  padding: 3.2mm 6mm;
+  font-size: 14pt;
+  line-height: 1.05;
+}
+
+.report-info-body {
+  padding: 5mm 6mm 4mm 6mm;
+}
+
+.report-info-row {
+  display: grid;
+  grid-template-columns: 28mm minmax(0, 1fr);
+  gap: 3mm;
+  align-items: start;
+  padding: 3mm 0;
+  border-bottom: 0.7pt solid var(--grid);
+}
+
+.report-info-row:last-child {
+  border-bottom: none;
+}
+
+.report-info-label {
+  color: var(--muted);
+  font-size: 10.4pt;
+  line-height: 1.2;
+}
+
+.report-info-value {
+  color: var(--text);
+  font-size: 10.5pt;
+  line-height: 1.3;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.risk-overview-layout {
+  display: grid;
+  grid-template-columns: 77mm minmax(0, 1fr);
+  gap: 6mm;
+  align-items: stretch;
+}
+
+.risk-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 36mm));
+  gap: 5mm;
+}
+
+.metric-card {
+  height: 32mm;
+  border: 0.8pt solid var(--border);
+  border-radius: 5mm;
+  box-shadow: none;
+  overflow: hidden;
+  background: #fff;
+}
+
+.metric-title {
+  height: 9.8mm;
+  color: #fff;
+  font-size: 12.2pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
+}
+
+.metric-card.danger .metric-title { background: var(--red); }
+.metric-card.primary .metric-title { background: var(--mid-blue); }
+
+.metric-body {
+  height: calc(100% - 9.8mm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6mm;
+  padding: 2mm;
+}
+
+.metric-value {
+  font-size: 22pt;
+  line-height: 1;
+  color: var(--red);
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.metric-card.primary .metric-value { color: var(--mid-blue); }
+.metric-sub {
+  color: inherit;
+  font-size: 11.8pt;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.metric-card.danger .metric-sub { color: var(--red); }
+.metric-card.primary .metric-sub { color: var(--mid-blue); }
+
+.variant-table-card {
+  min-height: 69mm;
+}
+
+.summary-note {
+  margin: 0 0 3mm 0;
+  color: var(--muted);
+  font-size: 8.8pt;
+  line-height: 1.45;
+}
+
+.variant-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.4pt;
+}
+
+.variant-table th,
+.variant-table td {
+  border-bottom: 0.3pt solid var(--grid);
+  padding: 2mm 1.5mm;
+  text-align: left;
+  vertical-align: top;
+}
+
+.variant-table th {
+  background: var(--pale-blue);
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.variant-table td:first-child {
+  max-width: 78mm;
+  word-break: break-all;
+}
+
+.match-summary-block {
+  margin: 4mm 0 5mm 0;
+}
+
+.match-summary-title {
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 2mm;
+}
+
+.match-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.8pt;
+}
+
+.match-summary-table th,
+.match-summary-table td {
+  border-bottom: 0.3pt solid var(--grid);
+  padding: 2mm 2mm;
+  text-align: left;
+}
+
+.match-summary-table th {
+  background: var(--pale-blue);
+  color: var(--navy);
+}
+
+.text-card {
+  padding: 6mm 7mm;
+  line-height: 1.65;
+  font-size: 11.2pt;
+  text-align: justify;
+}
+
+.text-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.bullet-card {
+  padding: 5mm 6mm;
+}
+
+.bullet-item {
+  display: grid;
+  grid-template-columns: 7mm minmax(0, 1fr);
+  gap: 3mm;
+  margin-bottom: 4mm;
+  line-height: 1.55;
+  font-size: 10.8pt;
+}
+
+.bullet-item:last-child { margin-bottom: 0; }
+.bullet-no {
+  width: 7mm;
+  height: 7mm;
+  border-radius: 2mm;
+  background: var(--light-blue);
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.6pt;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5mm;
+}
+
+.stat-card {
+  min-height: 29mm;
+  padding: 4mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2mm;
+}
+
+.stat-title {
+  color: var(--muted);
+  font-size: 10.7pt;
+  text-align: center;
+}
+
+.stat-value {
+  color: var(--mid-blue);
+  font-size: 19pt;
+  line-height: 1;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.stat-unit {
+  color: var(--muted);
+  font-size: 9.5pt;
+  text-align: center;
+}
+
+.chart-card {
+  min-height: 72mm;
+  padding: 5mm;
+}
+
+.chart-title {
+  color: var(--blue);
+  font-size: 15.5pt;
+  line-height: 1.1;
+  margin-bottom: 2mm;
+}
+
+.chart-subtitle {
+  color: var(--muted);
+  font-size: 9.5pt;
+  line-height: 1.1;
+  margin-bottom: 4mm;
+}
+
+.line-chart {
+  width: 100%;
+  height: 52mm;
+  display: block;
+}
+
+.line-chart .axis { stroke: var(--border); stroke-width: 1.2; }
+.line-chart .curve { stroke: var(--mid-blue); stroke-width: 2.4; }
+.line-chart .peak { stroke: var(--blue); stroke-width: 1.2; }
+.line-chart .tick,
+.line-chart .caption,
+.line-chart .peak-label { fill: var(--muted); font-family: "Times New Roman", "Tinos", Times, serif; font-size: 12px; }
+.line-chart .caption { font-family: "Noto Serif CJK SC", "SimSun", serif; }
+.line-chart .peak-label { fill: var(--blue); }
+.line-chart .median-line { stroke: var(--red); stroke-dasharray: 4 3; stroke-width: 1.2; }
+.line-chart .median-label { fill: var(--red); font-family: "Times New Roman", "Tinos", Times, serif; font-size: 11px; }
+.empty-chart {
+  color: var(--muted);
+  font-size: 9.8pt;
+  padding: 8mm 0;
+}
+
+.genome-bars {
+  height: 50mm;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5mm;
+  align-items: end;
+  border-left: 0.8pt solid var(--border);
+  border-bottom: 0.8pt solid var(--border);
+  padding: 2mm 1mm 0 2mm;
+  margin-top: 8mm;
+}
+
+.genome-bar-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5mm;
+}
+
+.genome-bar {
+  width: 100%;
+  min-height: 2mm;
+  background: var(--mid-blue);
+}
+.genome-bar.mid { background: var(--yellow); }
+.genome-bar.high { background: var(--red); }
+.genome-label {
+  color: var(--muted);
+  font-size: 7.5pt;
+}
+
+.prob-card {
+  padding: 6mm;
+  break-inside: auto;
+}
+
+.prob-row {
+  display: grid;
+  grid-template-columns: 32mm minmax(0, 1fr) 20mm;
+  gap: 5mm;
+  align-items: center;
+  margin-bottom: 8mm;
+  break-inside: avoid;
+}
+
+.prob-row:last-child { margin-bottom: 0; }
+.prob-label {
+  font-size: 13pt;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.progress-track {
+  height: 8mm;
+  background: #F1F4F9;
+  border: 0.8pt solid var(--border);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  min-width: 0;
+}
+.progress-fill.red { background: var(--red); }
+.progress-fill.yellow { background: var(--yellow); }
+.progress-fill.blue { background: var(--mid-blue); }
+.prob-pct {
+  font-size: 12.5pt;
+  text-align: right;
+  line-height: 1.1;
+}
+.prob-pct.red { color: var(--red); }
+.prob-pct.yellow { color: var(--yellow); }
+.prob-pct.blue { color: var(--mid-blue); }
+
+.priority-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11pt;
+}
+.priority-table th,
+.priority-table td {
+  border: 0.8pt solid var(--border);
+  padding: 3mm 2mm;
+  text-align: center;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+.priority-table th {
+  background: var(--light-blue);
+  color: var(--navy);
+  font-size: 11.5pt;
+}
+.priority-table .col-no { width: 14%; }
+.priority-table .col-type { width: 32%; }
+.priority-table .col-prob { width: 22%; }
+.priority-table .col-level { width: 32%; }
+.priority-table .level-high { color: var(--red); }
+.priority-table .level-mid { color: var(--yellow); }
+.priority-table .level-low { color: var(--muted); }
+
+.priority-table tr {
+  break-inside: avoid;
+}
+
+.advice-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6mm;
+}
+.advice-item {
+  padding: 5mm;
+  display: grid;
+  grid-template-columns: 9mm minmax(0, 1fr);
+  gap: 3mm;
+  align-items: start;
+}
+.advice-no {
+  width: 9mm;
+  height: 7mm;
+  border-radius: 2mm;
+  background: var(--mid-blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5pt;
+}
+.advice-title {
+  color: var(--navy);
+  font-size: 12pt;
+  line-height: 1.25;
+  margin-bottom: 2mm;
+  overflow-wrap: anywhere;
+}
+.advice-detail {
+  font-size: 10.6pt;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.signoff-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 7mm;
+}
+.signoff-card {
+  padding: 5mm;
+}
+.signoff-row {
+  display: grid;
+  grid-template-columns: 27mm minmax(0, 1fr);
+  gap: 3mm;
+  padding: 3mm 0;
+  border-bottom: 0.7pt solid var(--grid);
+  font-size: 10.5pt;
+  line-height: 1.25;
+}
+.signoff-row:last-child { border-bottom: none; }
+.signoff-label { color: var(--muted); }
+.signoff-value { text-align: right; overflow-wrap: anywhere; }
+.signature-line {
+  border-bottom: 0.8pt solid var(--border);
+  min-height: 7mm;
+  margin-bottom: 3mm;
+  display: grid;
+  grid-template-columns: 23mm minmax(0, 1fr);
+  align-items: end;
+  gap: 2mm;
+  font-size: 10.5pt;
+}
+.signature-label { color: var(--muted); }
+
+.disclaimer-card {
+  padding: 6mm;
+}
+
+.supplement-card {
+  padding: 6mm;
+}
+
+.supplement-block {
+  margin-bottom: 6mm;
+}
+.supplement-block:last-child {
+  margin-bottom: 0;
+}
+
+.supplement-title {
+  font-size: 11.5pt;
+  font-weight: 600;
+  color: var(--navy);
+  border-left: 3pt solid var(--mid-blue);
+  padding-left: 3mm;
+  margin-bottom: 3mm;
+  line-height: 1.3;
+}
+
+.supplement-body {
+  font-size: 10.5pt;
+  line-height: 1.6;
+  color: var(--text);
+  min-height: 12mm;
+}
+
+.supplement-body p {
+  margin: 0 0 3mm;
+  text-align: justify;
+}
+.supplement-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* 临床意义 / 适用人群 等编号条目，样式与免责声明 .bullet-item 保持一致 */
+.supplement-item {
+  display: grid;
+  grid-template-columns: 7mm minmax(0, 1fr);
+  gap: 2.5mm;
+  margin-bottom: 3mm;
+  line-height: 1.6;
+  font-size: 10.5pt;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.supplement-item:last-child {
+  margin-bottom: 0;
+}
+.supplement-item-no {
+  width: 7mm;
+  height: 7mm;
+  border-radius: 2mm;
+  background: var(--light-blue);
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.6pt;
+}
+.supplement-item-title {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.supplement-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5pt;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.supplement-table th,
+.supplement-table td {
+  border: 0.8pt solid var(--border);
+  padding: 2.4mm 3mm;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.supplement-table th {
+  background: var(--light-blue);
+  color: var(--navy);
+  font-weight: 600;
+}
+/* 只约束首列 / 末列。原写法 th{30%} 与 td{70%} 会同时命中两列、互相打架，
+   实测导致首列占到 70%、说明列只剩 30%（即「步骤栏太长、说明栏太短」）。 */
+.supplement-table th:first-child,
+.supplement-table td:first-child {
+  width: 30%;
+}
+.supplement-table th:last-child,
+.supplement-table td:last-child {
+  width: 70%;
+}
+
+.references-card {
+  padding: 6mm;
+}
+
+/* 悬挂缩进：首行 [n] 向左突出，后续行对齐正文左边界 */
+.reference {
+  position: relative;
+  padding-left: 11mm;
+  text-indent: -11mm;
+  margin-bottom: 3.6mm;
+  font-size: 10pt;
+  line-height: 1.55;
+  color: var(--text);
+  text-align: justify;
+  /* 长 DOI / URL 可正常换行，避免横向溢出。
+     anywhere 比 break-word 更强：URL 无可断字点时仍能在任意字符处断开。 */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: none;
+  /* 允许整条文献自然跨页，但尽量不在条目内部断开 */
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.reference:last-child {
+  margin-bottom: 0;
+}
+
+.reference-empty {
+  color: var(--muted);
+  padding-left: 0;
+  text-indent: 0;
+}
+
+/* 正文中的引用标记：[1] 不被拆到两行，也不会单独留在行尾 */
+.citation {
+  white-space: nowrap;
+  font-family: "Times New Roman", "Tinos", Times, serif;
+}
+
+.small-note {
+  color: var(--muted);
+  font-size: 9pt;
+  line-height: 1.45;
+}
+
+.mt-line { margin-top: 7mm; }
+.mt-section { margin-top: 10mm; }
+
+@media print {
+  html, body {
+    width: auto;
+  }
+}
+
+/* Flow-based report layout. Playwright supplies the repeated page header;
+   sections and cards flow continuously through Chromium's normal pagination. */
+.cover-page {
+  width: auto;
+  height: auto;
+  position: relative;
+  padding: 16mm 3mm 0;
+  overflow: hidden;
+}
+
+.report-section {
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  break-before: page;
+  page-break-before: always;
+}
+
+.section-content {
+  padding-top: 0;
+}
+
+.report-block {
+  margin-bottom: 10mm;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.report-block:last-child {
+  margin-bottom: 0;
+}
+
+.risk-cards-wide {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4mm;
+}
+
+.risk-cards-wide .metric-card {
+  height: 34mm;
+}
+
+.variant-table-card {
+  padding: 5mm;
+}
+
+.variant-table-card .card-title {
+  color: var(--navy);
+  font-size: 14pt;
+  margin-bottom: 3mm;
+}
+
+.variant-table tr,
+.finding-table tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.cancer-finding {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.prob-card {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.prob-card .finding-table,
+.prob-card .meaning-table,
+.prob-card .chart-wrap {
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.coverage-card,
+.risk-table-card {
+  margin-top: 5mm;
+}
+
+.compact-table {
+  font-size: 9.6pt;
+}
+
+.compact-table th,
+.compact-table td {
+  padding: 2.2mm 1.8mm;
+}
+
+.risk-高 { color: var(--red); font-weight: 600; }
+.risk-中 { color: #B38312; font-weight: 600; }
+.risk-低 { color: var(--green); font-weight: 600; }
+.risk-阴 { color: #6b7280; font-weight: 600; }
+
+.chart-wrap {
+  margin-top: 5mm;
+}
+
+.bar-chart {
+  width: 100%;
+  height: 62mm;
+  display: block;
+}
+
+.bar-chart .axis { stroke: var(--border); stroke-width: 1.2; }
+.bar-chart .bar { fill: var(--mid-blue); }
+.bar-chart .tick,
+.bar-chart .caption { fill: var(--muted); font-family: "Times New Roman", "Tinos", Times, serif; font-size: 12px; }
+.bar-chart .caption { font-family: "Noto Serif CJK SC", "SimSun", serif; }
+.bar-chart .median-line { stroke: var(--red); stroke-dasharray: 4 3; stroke-width: 1.5; }
+.bar-chart .customer-line { stroke: var(--green); stroke-width: 1.5; }
+.bar-chart .median-label { fill: var(--red); font-size: 11px; }
+.bar-chart .customer-label { fill: var(--green); font-size: 11px; }
+
+.finding-title {
+  color: var(--navy);
+  font-size: 13pt;
+  line-height: 1.3;
+  margin: 0 0 3mm;
+}
+
+.finding-title:not(:first-child) {
+  margin-top: 7mm;
+}
+
+.finding-copy {
+  margin: 0;
+  font-size: 10.8pt;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+.variant-site-cell {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.variant-site-cds {
+  font-weight: 600;
+}
+
+.variant-site-protein {
+  color: #5b6472;
+  font-size: 9pt;
+}
+
+.detail-table th:nth-child(1),
+.detail-table td:nth-child(1) {
+  width: 14%;
+}
+
+.detail-table th:nth-child(2),
+.detail-table td:nth-child(2) {
+  width: 22%;
+}
+
+.detail-table th:nth-child(3),
+.detail-table td:nth-child(3),
+.detail-table th:nth-child(5),
+.detail-table td:nth-child(5) {
+  width: 14%;
+  text-align: center;
+}
+
+.detail-table th:nth-child(4),
+.detail-table td:nth-child(4) {
+  width: 36%;
+}
+
+.variant-interpretations {
+  margin-top: 3mm;
+}
+
+.variant-interpretations .finding-copy:not(:last-child) {
+  margin-bottom: 1.5mm;
+}
+
+.cosmic-interpretations {
+  margin-top: 3mm;
+}
+
+.tcga-interpretations .finding-copy:not(:last-child) {
+  margin-bottom: 1.5mm;
+}
+
+.prevention-advice {
+  margin-top: 3mm;
+  border: 1px solid #e2e6ee;
+  border-radius: 6px;
+  padding: 2mm 3mm;
+  background: #fbfcfd;
+}
+
+.prevention-title {
+  margin: 0 0 1.5mm;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #1f2d3d;
+}
+
+.prevention-body {
+  white-space: pre-line;
+  font-size: 10pt;
+  line-height: 1.7;
+  color: #3a4350;
+  text-align: justify;
+}
+
+.finding-table {
+  margin-top: 3mm;
+  font-size: 9.5pt;
+}
+
+@media print {
+  .cover-page, .report-section { margin: 0; }
+  /* 第一个大章节（封面之后的正文起始）不需要强制分页，避免首页留白 */
+  .report-section:first-of-type {
+    break-before: auto;
+    page-break-before: auto;
+  }
+}
+
+/* =====================================================================
+ * 显式 PDF 物理页容器（由 static/js/paginate.js 生成）
+ * 每个 .pdf-page 恰好等于一个物理页的内容区，内部只放【完整闭合】的容器。
+ * 容器跨页时由 JS 拆分成多个独立闭合的同类容器，而不是靠 break-inside:avoid
+ * 把整块推到下一页。
+ * ===================================================================== */
+.pdf-page {
+  width: var(--page-content-width);
+  height: var(--page-content-height);
+  overflow: hidden;
+  position: relative;
+  break-after: page;
+  page-break-after: always;
+}
+
+.pdf-page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+/* 兜底：极少数无法再切分的超高原子内容（如不可分割的大图/SVG），
+   宁可允许视觉溢出，也绝不裁剪丢失内容。正常情况下不应出现。 */
+.pdf-page-overflow {
+  overflow: visible;
+}
+
+/* 进入显式分页模式后，分页由 JS 精确控制：
+   取消 CSS 的「整块禁止拆分/强制分页」，允许内容被切分成多个闭合容器。 */
+.pdf-page .report-section,
+.pdf-page .report-block,
+.pdf-page .card,
+.pdf-page .prob-card,
+.pdf-page .cancer-finding,
+.pdf-page .advice-item,
+.pdf-page .bullet-item,
+.pdf-page .supplement-block,
+.pdf-page .supplement-item,
+.pdf-page .supplement-body,
+.pdf-page .prevention-advice,
+.pdf-page .reference,
+.pdf-page .text-card,
+.pdf-page table,
+.pdf-page thead,
+.pdf-page tbody,
+.pdf-page tr {
+  break-inside: auto;
+  page-break-inside: auto;
+  break-before: auto;
+  page-break-before: auto;
+  break-after: auto;
+  page-break-after: auto;
+}
+
+/* 表格跨页片段重复表头 */
+.pdf-page table {
+  border-collapse: collapse;
+}
+
+/* 让章节容器成为 BFC，把子块的上下外边距包含在自身高度内。
+   否则外边距会穿透出来参与折叠，导致分页测量偏小、内容溢出页底。 */
+.pdf-page > .section-content {
+  display: flow-root;
+}
+
+.pdf-page thead {
+  display: table-header-group;
+}
+
+/* 跨页表格的续接样式：首页片段不封底边（表示未完），
+   续页片段重复表头，避免「表已结束又另起一张新表」的错觉。 */
+.pdf-page table.table-frag-head > tbody > tr:last-child > td {
+  border-bottom: none;
+}

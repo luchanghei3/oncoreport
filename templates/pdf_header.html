@@ -1,0 +1,22 @@
+<style>
+  * { box-sizing: border-box; }
+  .pdf-page-header { height: 15mm; width: 100%; position: relative; overflow: hidden; color: #173B6C; font-family: "Noto Serif CJK SC", "SimSun", "Songti SC", serif; border-bottom: 1.2pt solid #5B82BE; }
+  .pdf-header-background { position: absolute; inset: 0; z-index: 0; width: 100%; height: 15mm; object-fit: cover; object-position: center bottom; }
+  .pdf-page-header-inner { position: absolute; inset: 0 12mm; z-index: 1; }
+  .pdf-header-logo { position: absolute; left: 0; bottom: 2.2mm; width: 19mm; height: auto; max-height: 10.5mm; object-fit: contain; }
+  .pdf-header-brand { position: absolute; right: 0; bottom: 2.5mm; text-align: right; line-height: 1; }
+  .pdf-latin { font-family: "Times New Roman", "Tinos", Times, serif; }
+  .pdf-brand-name { font-size: 16.5pt; }
+  .pdf-tm { font-size: 7.2pt; position: relative; top: -2.8mm; margin-left: 1mm; }
+  .pdf-header-lab { margin-top: 1.8mm; font-size: 10.2pt; }
+</style>
+<header class="pdf-page-header">
+  <img class="pdf-header-background" src="{{ assets.header_bg }}" alt="" />
+  <div class="pdf-page-header-inner">
+    <img class="pdf-header-logo" src="{{ assets.logo }}" alt="IBIRI logo" />
+    <div class="pdf-header-brand">
+      <div><span class="pdf-brand-name pdf-latin">{{ data.report_meta.brand_name }}</span><span class="pdf-tm pdf-latin">TM</span></div>
+      <div class="pdf-header-lab">{{ data.report_meta.lab_name | mixed }}</div>
+    </div>
+  </div>
+</header>

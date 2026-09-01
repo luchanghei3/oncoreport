@@ -1,0 +1,58 @@
+{
+  "report_meta": {
+    "brand_name": "Oncoseeing",
+    "lab_name": "IBIRI医学检验实验室",
+    "lab_name_en": "IBIRI Medical Laboratory",
+    "report_date": "2026-07-24",
+    "report_number": "OS-CF2026-0724-0888",
+    "sign_date": "2026-07-24",
+    "review_doctor": "李医生",
+    "issue_doctor": "王医生",
+    "method_name": "cfDNA 靶向 Panel 高通量测序技术"
+  },
+  "patient": {
+    "name": "张××",
+    "sex": "男",
+    "age": 52,
+    "hospital": "IBIRI健康管理中心"
+  },
+  "sample": {
+    "sample_id": "CF2026-0724-0888",
+    "sample_type": "外周血（10mL，游离 DNA 保存管）",
+    "submitting_unit": "IBIRI健康管理中心",
+    "received_date": "2026-07-20"
+  },
+  "test": {
+    "report_title": "多癌种早期筛查检测与风险评估报告",
+    "report_subtitle": "基于循环游离 DNA 靶向 Panel 高通量测序技术",
+    "english_title": "Multi-Cancer Early Risk Assessment Report",
+    "cover_title_line1": "多癌种早期筛查检测与",
+    "cover_title_line2": "风险评估报告"
+  },
+  "result": {
+    "cancer_signal": true,
+    "overall_probability": 0.86,
+    "cancer_risks": [
+      {"cancer": "结直肠癌", "risk_label": "高"},
+      {"cancer": "胃癌", "risk_label": "低"},
+      {"cancer": "胰腺癌", "risk_label": "低"},
+      {"cancer": "其他", "risk_label": "低"}
+    ]
+  },
+  "recommendation": {
+    "items": [
+      {
+        "title": "建议一：尽快专科复诊",
+        "detail": "建议尽快前往消化内科或肿瘤专科门诊复诊，结合既往病史、家族史及当前症状进行风险复核。"
+      },
+      {
+        "title": "建议二：开展针对性检查",
+        "detail": "优先考虑结肠镜检查，并根据临床需要结合腹部增强 CT / MRI、粪便潜血、CEA 等进一步评估。"
+      },
+      {
+        "title": "建议三：动态随访",
+        "detail": "如首次影像学或内镜检查未发现明确异常，建议结合临床判断在 1–3 个月内复查或补充相关检查。"
+      }
+    ]
+  }
+}
